@@ -8,8 +8,8 @@ export default function CategoryGrid() {
     <section id="categories" className="px-6 pb-16">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-end justify-between">
-          <h2 className="font-serif text-3xl font-semibold text-ink">Browse by Category</h2>
-          <a href="#events" className="hidden text-sm font-medium text-ink hover:text-terracotta sm:block">View all categories</a>
+          <h2 className="font-serif text-3xl font-semibold text-ink dark:text-paper">Browse by Category</h2>
+          <a href="#events" className="hidden text-sm font-medium text-ink hover:text-sage dark:text-paper sm:block">View all categories</a>
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">

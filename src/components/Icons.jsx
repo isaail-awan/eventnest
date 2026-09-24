@@ -66,3 +66,18 @@ export function IconArrowLeft({ className = "h-5 w-5" }) {
 export function IconChevronDown({ className = "h-4 w-4" }) {
   return <svg viewBox="0 0 24 24" className={className} {...base}><path d="M6 9l6 6 6-6" /></svg>;
 }
+export function IconUser({ className = "h-5 w-5" }) {
+  return <svg viewBox="0 0 24 24" className={className} {...base}><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" /></svg>;
+}
+export function IconLock({ className = "h-5 w-5" }) {
+  return <svg viewBox="0 0 24 24" className={className} {...base}><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" /></svg>;
+}
+export function IconLogOut({ className = "h-4 w-4" }) {
+  return <svg viewBox="0 0 24 24" className={className} {...base}><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" /></svg>;
+}
+export function IconSun({ className = "h-5 w-5" }) {
+  return <svg viewBox="0 0 24 24" className={className} {...base}><circle cx="12" cy="12" r="4.5" /><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8" /></svg>;
+}
+export function IconMoon({ className = "h-5 w-5" }) {
+  return <svg viewBox="0 0 24 24" className={className} {...base}><path d="M20.5 14.5A9 9 0 1110 2.8a7 7 0 0010.5 11.7z" /></svg>;
+}

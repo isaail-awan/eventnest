@@ -10,8 +10,8 @@ export default function Logo() {
         <path d="M20 34c-6 0-10-3-10-3s2 5 10 5 10-5 10-5-4 3-10 3z" fill="var(--color-sage)" />
       </svg>
       <span className="leading-tight">
-        <span className="block font-serif text-xl font-bold text-ink">{brand.name}</span>
-        <span className="block text-[11px] tracking-wide text-ink-soft">{brand.tagline}</span>
+        <span className="block font-serif text-xl font-bold text-ink dark:text-paper">{brand.name}</span>
+        <span className="block text-[11px] tracking-wide text-ink-soft dark:text-paper/60">{brand.tagline.toUpperCase()}</span>
       </span>
     </span>
   );

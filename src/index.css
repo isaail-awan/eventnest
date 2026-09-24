@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-paper: #F7F1E6;
   --color-surface: #FFFFFF;
@@ -22,13 +24,16 @@ html {
   scrollbar-color: #C7BFA9 var(--color-paper);
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--color-ink);
   background: var(--color-paper);
 }
 
-/* Custom scrollbar (WebKit: Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
   width: 12px;
 }
@@ -42,4 +47,13 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-sage);
+}
+
+@keyframes tick {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.animate-tick {
+  animation: tick 1s ease-out;
 }

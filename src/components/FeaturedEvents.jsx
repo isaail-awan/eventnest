@@ -8,13 +8,13 @@ export default function FeaturedEvents() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-end justify-between">
           <div>
-            <h2 className="font-serif text-3xl font-semibold text-ink">Featured Events</h2>
-            <p className="mt-1 text-sm text-ink-soft">Handpicked events you shouldn't miss.</p>
+            <h2 className="font-serif text-3xl font-semibold text-ink dark:text-paper">Featured Events</h2>
+            <p className="mt-1 text-sm text-ink-soft dark:text-paper/60">Handpicked events you shouldn't miss.</p>
           </div>
 
           <div className="hidden gap-2 sm:flex">
-            <button aria-label="Previous" className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft"><IconChevronLeft /></button>
-            <button aria-label="Next" className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft"><IconChevronRight /></button>
+            <button aria-label="Previous" className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft dark:border-white/10 dark:text-paper dark:hover:bg-white/10"><IconChevronLeft /></button>
+            <button aria-label="Next" className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft dark:border-white/10 dark:text-paper dark:hover:bg-white/10"><IconChevronRight /></button>
           </div>
         </div>
 

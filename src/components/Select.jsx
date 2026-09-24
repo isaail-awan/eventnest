@@ -27,14 +27,14 @@ export default function Select({ value, onChange, options, className = "" }) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between gap-3 rounded-xl border border-border bg-paper px-4 py-3 text-left text-sm text-ink outline-none transition hover:border-sage/50 focus:border-sage focus:ring-2 focus:ring-sage/20"
+        className="flex w-full items-center justify-between gap-3 rounded-xl border border-border bg-paper px-4 py-3 text-left text-sm text-ink outline-none transition hover:border-sage/50 focus:border-sage focus:ring-2 focus:ring-sage/20 dark:border-white/10 dark:bg-white/5 dark:text-paper"
       >
         <span className="truncate">{selected.label}</span>
-        <IconChevronDown className={"h-4 w-4 shrink-0 text-ink-soft transition-transform duration-200 " + (open ? "rotate-180" : "")} />
+        <IconChevronDown className={"h-4 w-4 shrink-0 text-ink-soft dark:text-paper/50 transition-transform duration-200 " + (open ? "rotate-180" : "")} />
       </button>
 
       {open && (
-        <ul className="absolute z-30 mt-2 w-full overflow-hidden rounded-xl border border-border bg-surface py-1.5 shadow-lg shadow-black/10">
+        <ul className="absolute z-30 mt-2 w-full overflow-hidden rounded-xl border border-border bg-surface py-1.5 shadow-lg shadow-black/10 dark:border-white/10 dark:bg-[#242019]">
           {options.map((o) => {
             const isSelected = o.value === value;
             return (
@@ -47,7 +47,7 @@ export default function Select({ value, onChange, options, className = "" }) {
                   }}
                   className={
                     "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm transition " +
-                    (isSelected ? "bg-sage/10 text-ink font-medium" : "text-ink-soft hover:bg-accent-soft hover:text-ink")
+                    (isSelected ? "bg-sage/10 font-medium text-ink dark:text-paper" : "text-ink-soft hover:bg-accent-soft hover:text-ink dark:text-paper/60 dark:hover:bg-white/10 dark:hover:text-paper")
                   }
                 >
                   <span className="truncate">{o.label}</span>
