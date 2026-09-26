@@ -3,9 +3,11 @@ import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import events from "../data/events";
 import { getEventDetails } from "../data/eventDetails";
 import { shortDate } from "../utils/bookings";
+import { validatePayment } from "../utils/card";
 import useAuth from "../hooks/useAuth";
 import Select from "../components/Select";
 import AuthGate from "../components/AuthGate";
+import PaymentMethod from "../components/PaymentMethod";
 import { IconCalendar, IconMapPin, IconMinus, IconPlus } from "../components/Icons";
 import BookingConfirmation from "./BookingConfirmation";
 
@@ -63,8 +65,11 @@ export default function BookEvent({ onConfirm }) {
     quantity: 1,
     notes: "",
   }));
+  const [payment, setPayment] = useState({ cardNumber: "", cardName: "", expiry: "", cvv: "" });
   const [errors, setErrors] = useState({});
+  const [paymentErrors, setPaymentErrors] = useState({});
   const [booking, setBooking] = useState(null);
+  const [processing, setProcessing] = useState(false);
 
   if (!event) return <NotFound />;
 
@@ -82,13 +87,19 @@ export default function BookEvent({ onConfirm }) {
     setForm((prev) => ({ ...prev, quantity: Math.min(10, Math.max(1, prev.quantity + delta)) }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) return;
 
     const found = validate(form);
+    const foundPayment = validatePayment(payment);
     setErrors(found);
-    if (Object.keys(found).length > 0) return;
+    setPaymentErrors(foundPayment);
+    if (Object.keys(found).length > 0 || Object.keys(foundPayment).length > 0) return;
+
+    setProcessing(true);
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    setProcessing(false);
 
     const newBooking = {
       id: "EN-" + Math.floor(100000 + Math.random() * 900000),
@@ -102,7 +113,6 @@ export default function BookEvent({ onConfirm }) {
       email: form.email.trim(),
       phone: form.phone,
       notes: form.notes.trim(),
-      status: "active",
       createdAt: new Date().toISOString(),
     };
 
@@ -124,44 +134,50 @@ export default function BookEvent({ onConfirm }) {
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_380px]">
         {user ? (
-          <form onSubmit={handleSubmit} noValidate className="space-y-6 rounded-2xl border border-border bg-surface p-6 dark:border-white/10 dark:bg-white/5 md:p-8">
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Full name" id="name" error={errors.name}>
-                <input id="name" name="name" type="text" value={form.name} onChange={handleChange} placeholder="Your full name" className={inputClass(errors.name)} />
-              </Field>
-              <Field label="Phone number" id="phone" error={errors.phone}>
-                <input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="0300 1234567" className={inputClass(errors.phone)} />
-              </Field>
-            </div>
-
-            <Field label="Email" id="email" error={errors.email}>
-              <input id="email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" className={inputClass(errors.email)} />
-            </Field>
-
-            <Field label="Ticket type" id="tierId">
-              <Select value={form.tierId} onChange={(val) => setForm({ ...form, tierId: val })} options={tierOptions} />
-            </Field>
-
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-ink dark:text-paper">Number of tickets</label>
-              <div className="inline-flex items-center gap-4 rounded-xl border border-border px-4 py-2.5 dark:border-white/10">
-                <button type="button" onClick={() => changeQuantity(-1)} disabled={form.quantity <= 1} className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft disabled:opacity-40 dark:border-white/10 dark:text-paper dark:hover:bg-white/10">
-                  <IconMinus className="h-3.5 w-3.5" />
-                </button>
-                <span className="w-6 text-center text-sm font-semibold text-ink dark:text-paper">{form.quantity}</span>
-                <button type="button" onClick={() => changeQuantity(1)} disabled={form.quantity >= 10} className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft disabled:opacity-40 dark:border-white/10 dark:text-paper dark:hover:bg-white/10">
-                  <IconPlus className="h-3.5 w-3.5" />
-                </button>
+          <form onSubmit={handleSubmit} noValidate className="space-y-8 rounded-2xl border border-border bg-surface p-6 dark:border-white/10 dark:bg-white/5 md:p-8">
+            <div className="space-y-6">
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Full name" id="name" error={errors.name}>
+                  <input id="name" name="name" type="text" value={form.name} onChange={handleChange} placeholder="Your full name" className={inputClass(errors.name)} />
+                </Field>
+                <Field label="Phone number" id="phone" error={errors.phone}>
+                  <input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="0300 1234567" className={inputClass(errors.phone)} />
+                </Field>
               </div>
-              <p className="mt-1.5 text-xs text-ink-soft dark:text-paper/50">Maximum 10 tickets per booking</p>
+
+              <Field label="Email" id="email" error={errors.email}>
+                <input id="email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" className={inputClass(errors.email)} />
+              </Field>
+
+              <Field label="Ticket type" id="tierId">
+                <Select value={form.tierId} onChange={(val) => setForm({ ...form, tierId: val })} options={tierOptions} />
+              </Field>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-ink dark:text-paper">Number of tickets</label>
+                <div className="inline-flex items-center gap-4 rounded-xl border border-border px-4 py-2.5 dark:border-white/10">
+                  <button type="button" onClick={() => changeQuantity(-1)} disabled={form.quantity <= 1} className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft disabled:opacity-40 dark:border-white/10 dark:text-paper dark:hover:bg-white/10">
+                    <IconMinus className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="w-6 text-center text-sm font-semibold text-ink dark:text-paper">{form.quantity}</span>
+                  <button type="button" onClick={() => changeQuantity(1)} disabled={form.quantity >= 10} className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-ink transition hover:bg-accent-soft disabled:opacity-40 dark:border-white/10 dark:text-paper dark:hover:bg-white/10">
+                    <IconPlus className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                <p className="mt-1.5 text-xs text-ink-soft dark:text-paper/50">Maximum 10 tickets per booking</p>
+              </div>
+
+              <Field label="Special requests (optional)" id="notes">
+                <textarea id="notes" name="notes" rows="3" value={form.notes} onChange={handleChange} placeholder="Wheelchair access, dietary needs, etc." className={inputClass(false)} />
+              </Field>
             </div>
 
-            <Field label="Special requests (optional)" id="notes">
-              <textarea id="notes" name="notes" rows="3" value={form.notes} onChange={handleChange} placeholder="Wheelchair access, dietary needs, etc." className={inputClass(false)} />
-            </Field>
+            <div className="border-t border-border pt-6 dark:border-white/10">
+              <PaymentMethod payment={payment} setPayment={setPayment} errors={paymentErrors} />
+            </div>
 
-            <button type="submit" className="w-full rounded-full bg-terracotta px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-terracotta-dark active:scale-[0.98]">
-              Confirm Registration
+            <button type="submit" disabled={processing} className="w-full rounded-full bg-terracotta px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-terracotta-dark active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70">
+              {processing ? "Processing payment..." : "Pay PKR " + total.toLocaleString() + " & Confirm"}
             </button>
           </form>
         ) : (

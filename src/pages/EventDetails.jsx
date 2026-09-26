@@ -4,6 +4,7 @@ import events from "../data/events";
 import { getEventDetails } from "../data/eventDetails";
 import EventCard from "../components/EventCard";
 import CountdownTimer from "../components/CountdownTimer";
+import Reveal from "../components/Reveal";
 import { IconCalendar, IconMapPin, IconArrowRight, IconChevronLeft } from "../components/Icons";
 
 function formatDate(iso) {
@@ -61,7 +62,7 @@ function EventDetailsView({ event }) {
         <IconChevronLeft className="h-3.5 w-3.5" /> All events
       </Link>
 
-      <header className="mt-6 max-w-3xl">
+      <header className="anim-fade-up mt-6 max-w-3xl">
         <p className="text-xs font-medium tracking-[0.2em] text-terracotta">{event.category.toUpperCase()}</p>
         <h1 className="mt-3 font-serif text-4xl font-semibold leading-[1.15] text-ink dark:text-paper md:text-5xl">{event.name}</h1>
 
@@ -71,16 +72,18 @@ function EventDetailsView({ event }) {
         </div>
       </header>
 
-      <div className="relative mt-8 aspect-[21/9] overflow-hidden rounded-3xl border border-border bg-accent-soft dark:border-white/10 dark:bg-white/5">
-        {!imgError ? (
-          <img src={event.image} alt={event.name} onError={() => setImgError(true)} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-ink-soft dark:text-paper/40"><IconCalendar className="h-10 w-10" /></div>
-        )}
-      </div>
+      <Reveal animation="zoom" delay={100}>
+        <div className="relative mt-8 aspect-[21/9] overflow-hidden rounded-3xl border border-border bg-accent-soft dark:border-white/10 dark:bg-white/5">
+          {!imgError ? (
+            <img src={event.image} alt={event.name} onError={() => setImgError(true)} className="h-full w-full object-cover" />
+          ) : (
+            <div className="flex h-full items-center justify-center text-ink-soft dark:text-paper/40"><IconCalendar className="h-10 w-10" /></div>
+          )}
+        </div>
+      </Reveal>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_360px]">
-        <div>
+        <Reveal animation="left">
           <div className="flex flex-wrap gap-2">
             {tabs.map((t) => (
               <button
@@ -98,7 +101,7 @@ function EventDetailsView({ event }) {
             ))}
           </div>
 
-          <div className="mt-8">
+          <div key={tab} className="anim-fade-in mt-8">
             {tab === "about" && (
               <p className="max-w-2xl font-serif text-xl italic leading-relaxed text-ink dark:text-paper">{info.description}</p>
             )}
@@ -134,9 +137,9 @@ function EventDetailsView({ event }) {
               </div>
             )}
           </div>
-        </div>
+        </Reveal>
 
-        <div className="space-y-5">
+        <Reveal animation="right" delay={100} className="space-y-5">
           <CountdownTimer date={event.date} time={event.time} />
 
           <div className="sticky top-28 rounded-2xl border border-border bg-surface p-6 shadow-sm shadow-black/5 dark:border-white/10 dark:bg-white/5">
@@ -181,16 +184,20 @@ function EventDetailsView({ event }) {
 
             <p className="mt-3 text-center text-xs text-ink-soft dark:text-paper/50">Free cancellation up to 48 hours before the event</p>
           </div>
-        </div>
+        </Reveal>
       </div>
 
       {similar.length > 0 && (
         <div className="mt-20 border-t border-border pt-12 dark:border-white/10">
-          <p className="text-xs font-medium tracking-[0.2em] text-ink-soft dark:text-paper/50">YOU MAY ALSO LIKE</p>
-          <h2 className="mt-2 font-serif text-3xl font-semibold text-ink dark:text-paper">Similar Events</h2>
+          <Reveal>
+            <p className="text-xs font-medium tracking-[0.2em] text-ink-soft dark:text-paper/50">YOU MAY ALSO LIKE</p>
+            <h2 className="mt-2 font-serif text-3xl font-semibold text-ink dark:text-paper">Similar Events</h2>
+          </Reveal>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {similar.map((e) => (
-              <EventCard key={e.id} event={e} />
+            {similar.map((e, i) => (
+              <Reveal key={e.id} delay={i * 90}>
+                <EventCard event={e} />
+              </Reveal>
             ))}
           </div>
         </div>

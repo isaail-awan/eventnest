@@ -9,9 +9,10 @@ import { IconSearch, IconMenu, IconClose } from "./Icons";
 const links = [
   { label: "Home", to: "/" },
   { label: "Events", to: "/events" },
+  { label: "Categories", to: "/categories" },
   { label: "My Tickets", to: "/tickets" },
-  { label: "About", to: "/#about" },
-  { label: "Contact", to: "/#contact" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
 ];
 
 export default function Navbar({ bookingCount = 0, dark, onToggleTheme }) {
@@ -24,7 +25,7 @@ export default function Navbar({ bookingCount = 0, dark, onToggleTheme }) {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <Link to="/"><Logo /></Link>
 
-        <ul className="hidden items-center gap-8 lg:flex">
+        <ul className="hidden items-center gap-7 xl:flex">
           {links.map((l) => (
             <li key={l.label}>
               <Link
@@ -58,14 +59,14 @@ export default function Navbar({ bookingCount = 0, dark, onToggleTheme }) {
             </>
           )}
 
-          <button className="text-ink dark:text-paper lg:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+          <button className="text-ink dark:text-paper xl:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
             {open ? <IconClose /> : <IconMenu />}
           </button>
         </div>
       </div>
 
       {open && (
-        <ul className="space-y-3 border-t border-border bg-paper px-6 pb-5 pt-4 dark:border-white/10 dark:bg-[#1A1712] lg:hidden">
+        <ul className="space-y-3 border-t border-border bg-paper px-6 pb-5 pt-4 dark:border-white/10 dark:bg-[#1A1712] xl:hidden">
           {links.map((l) => (
             <li key={l.label}>
               <Link to={l.to} onClick={() => setOpen(false)} className="flex items-center gap-2 py-1 text-ink hover:text-sage dark:text-paper">

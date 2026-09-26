@@ -9,10 +9,11 @@ function formatDate(iso) {
 export default function EventCard({ event }) {
   const [liked, setLiked] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const imageBg = imgError ? "bg-accent-soft dark:bg-white/10" : "shimmer";
 
   return (
     <div className="group overflow-hidden rounded-2xl bg-surface shadow-md shadow-black/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-white/5 dark:shadow-none dark:ring-1 dark:ring-white/10">
-      <div className="relative h-44 overflow-hidden bg-accent-soft dark:bg-white/10">
+      <div className={"relative h-44 overflow-hidden " + imageBg}>
         <Link to={"/events/" + event.id} className="block h-full w-full">
           {!imgError ? (
             <img src={event.image} alt={event.name} onError={() => setImgError(true)} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
@@ -40,7 +41,7 @@ export default function EventCard({ event }) {
 
         <div className="mt-4 flex items-center justify-between">
           <p className="font-medium text-ink dark:text-paper">PKR {event.price.toLocaleString()}</p>
-          <Link to={"/events/" + event.id} className="flex items-center gap-1.5 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white transition hover:bg-sage-dark active:scale-95">
+          <Link to={"/events/" + event.id} className="flex items-center gap-1.5 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white transition hover:bg-sage-dark hover:translate-x-0.5 active:scale-95">
             View Event <IconArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>

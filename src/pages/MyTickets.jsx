@@ -6,24 +6,26 @@ import useAuth from "../hooks/useAuth";
 import AuthGate from "../components/AuthGate";
 import { IconCalendar, IconTicket } from "../components/Icons";
 
-function getStatus(booking) {
+function getDisplayStatus(booking) {
   if (booking.status === "cancelled") return "cancelled";
   const event = events.find((e) => e.id === booking.eventId);
   if (event && event.date < new Date().toISOString().slice(0, 10)) return "past";
-  return "upcoming";
+  return booking.status === "confirmed" ? "confirmed" : "pending";
 }
 
 const statusStyles = {
-  upcoming: "bg-sage/10 text-sage",
+  pending: "bg-terracotta/10 text-terracotta",
+  confirmed: "bg-sage/10 text-sage",
   past: "bg-accent-soft text-ink-soft dark:bg-white/10 dark:text-paper/60",
   cancelled: "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
 };
-const statusLabels = { upcoming: "Upcoming", past: "Past", cancelled: "Cancelled" };
+const statusLabels = { pending: "Pending", confirmed: "Confirmed", past: "Past", cancelled: "Cancelled" };
 
 function TicketCard({ booking, onCancel }) {
   const event = events.find((e) => e.id === booking.eventId);
   const [confirming, setConfirming] = useState(false);
-  const status = getStatus(booking);
+  const status = getDisplayStatus(booking);
+  const canCancel = status === "pending" || status === "confirmed";
 
   if (!event) return null;
 
@@ -44,7 +46,7 @@ function TicketCard({ booking, onCancel }) {
 
       <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
         <p className="font-serif text-lg font-semibold text-ink dark:text-paper">PKR {booking.total.toLocaleString()}</p>
-        {status === "upcoming" && (confirming ? (
+        {canCancel && (confirming ? (
           <div className="flex gap-2">
             <button onClick={() => onCancel(booking.id)} className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-600">Yes, cancel</button>
             <button onClick={() => setConfirming(false)} className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-ink-soft transition hover:bg-accent-soft dark:border-white/10 dark:text-paper/60 dark:hover:bg-white/10">Keep</button>
@@ -73,7 +75,7 @@ export default function MyTickets({ bookings = [], onCancel }) {
   }
 
   const rows = [...bookings].filter((b) => b.userId === user.id).reverse();
-  const upcomingCount = rows.filter((b) => getStatus(b) === "upcoming").length;
+  const activeCount = rows.filter((b) => ["pending", "confirmed"].includes(getDisplayStatus(b))).length;
   const totalSpent = rows.filter((b) => b.status !== "cancelled").reduce((sum, b) => sum + b.total, 0);
 
   return (
@@ -96,8 +98,8 @@ export default function MyTickets({ bookings = [], onCancel }) {
               <p className="mt-1 text-xs text-ink-soft dark:text-paper/60">Total bookings</p>
             </div>
             <div className="rounded-2xl border border-border bg-surface p-4 text-center dark:border-white/10 dark:bg-white/5">
-              <p className="font-serif text-2xl font-semibold text-ink dark:text-paper">{upcomingCount}</p>
-              <p className="mt-1 text-xs text-ink-soft dark:text-paper/60">Upcoming</p>
+              <p className="font-serif text-2xl font-semibold text-ink dark:text-paper">{activeCount}</p>
+              <p className="mt-1 text-xs text-ink-soft dark:text-paper/60">Active</p>
             </div>
             <div className="rounded-2xl border border-border bg-surface p-4 text-center dark:border-white/10 dark:bg-white/5">
               <p className="font-serif text-lg font-semibold text-ink dark:text-paper sm:text-2xl">PKR {totalSpent.toLocaleString()}</p>
